@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { supabase } from "../../../../utils/supabase";
+import { createReminder } from "../../../../services/remindersService";
 import Button from "../../elements/Button";
 import FormField from "../../fragments/FormField";
 import Judul from "../../elements/Judul";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import logo from "../../../../assets/images/logo.png";
 
 const RegistrationForm = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nik: "",
     nama: "",
@@ -25,11 +24,21 @@ const RegistrationForm = () => {
     setFormData({ ...formData, [id]: value });
   };
 
+  const formatPhoneNumber = (phoneNumber) => {
+    if (phoneNumber.startsWith("0")) {
+      return "+62" + phoneNumber.slice(1);
+    }
+    return phoneNumber;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formattedWa = formatPhoneNumber(formData.wa);
+
     console.log("Form Data sebelum submit:", formData);
 
-    // Validasi input, pastikan tidak ada yang kosong
+    // Validasi input
     if (
       !formData.nik ||
       !formData.nama ||
@@ -44,29 +53,22 @@ const RegistrationForm = () => {
     }
 
     try {
-      // Periksa apakah NIK sudah terdaftar
-      const { data: existingNik, error: checkError } = await supabase
-        .from("kb_registration")
-        .select("nik")
-        .eq("nik", formData.nik);
+      // Kirim data ke API
+      const reminderData = {
+        nik: formData.nik,
+        nama: formData.nama,
+        wa: formattedWa,
+        ttl: formData.ttl,
+        usia: formData.usia,
+        jenis_kelamin: formData.jenis_kelamin,
+        alamat: formData.alamat,
+        alat_kontrasepsi: formData.alat_kontrasepsi,
+        tanggal_daftar: new Date().toISOString().split("T")[0],
+      };
 
-      if (checkError) throw checkError;
+      await createReminder(reminderData);
 
-      if (existingNik && existingNik.length > 0) {
-        toast.error("NIK sudah terdaftar! Silakan gunakan NIK lain.");
-        return;
-      }
-
-      // Jika NIK belum terdaftar, simpan data ke database
-      const { error } = await supabase
-        .from("kb_registration")
-        .insert([formData]);
-      if (error) throw error;
-
-      toast.success("Data berhasil ditambahkan!");
-      setTimeout(() => {
-        navigate("/admin/dashboard");
-      }, 2000);
+      toast.success("Pengingat berhasil dibuat!");
 
       // Reset form setelah berhasil submit
       setFormData({
@@ -89,7 +91,8 @@ const RegistrationForm = () => {
       onSubmit={handleSubmit}
       className="bg-blue-900 p-8 shadow-lg max-w-lg mx-auto"
     >
-      <Judul judul="Pendaftaran KB" />
+      <img src={logo} className="rounded-md mb-4 w-full" />
+      <Judul judul="Pendaftaran Akseptor KB Non-MKJP" />
 
       <FormField
         id="nik"

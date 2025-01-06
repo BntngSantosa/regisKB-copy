@@ -17,9 +17,7 @@ export default function AdminTable() {
     const fetchData = async () => {
       const { data: fetchedData, error } = await supabase
         .from("kb_registration")
-        .select(
-          "nik, nama, alamat, ttl, usia, jenis_kelamin, alat_kontrasepsi, created_at, wa"
-        );
+        .select("*");
       if (error) {
         console.error("Error fetching data from Supabase:", error);
       } else {
@@ -41,8 +39,7 @@ export default function AdminTable() {
         data.filter(
           (item) =>
             item.nik.toString().includes(lowerCaseQuery) ||
-            item.nama.toLowerCase().includes(lowerCaseQuery) ||
-            item.alamat.toLowerCase().includes(lowerCaseQuery)
+            item.nama.toLowerCase().includes(lowerCaseQuery)
         )
       );
     }
@@ -98,7 +95,8 @@ export default function AdminTable() {
       { header: "Jenis Kelamin", key: "jenis_kelamin", width: 20 },
       { header: "Alat Kontrasepsi", key: "alat_kontrasepsi", width: 20 },
       { header: "Nomor WhatsApp", key: "wa", width: 20 },
-      { header: "Tanggal Pendaftaran", key: "created_at", width: 20 },
+      { header: "Tanggal Pendaftaran", key: "tanggal_daftar", width: 20 },
+      { header: "Tanggal Kembali", key: "tanggal_berikutnya", width: 20 },
     ];
 
     // Menambahkan data
@@ -112,7 +110,8 @@ export default function AdminTable() {
         jenis_kelamin: item.jenis_kelamin,
         alat_kontrasepsi: item.alat_kontrasepsi,
         wa: item.wa,
-        created_at: new Date(item.created_at).toLocaleDateString(),
+        tanggal_daftar: item.tanggal_daftar,
+        tanggal_berikutnya: item.tanggal_berikutnya,
       });
     });
 
@@ -149,7 +148,7 @@ export default function AdminTable() {
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Cari berdasarkan NIK, Nama, atau Alamat..."
+            placeholder="Cari berdasarkan NIK, atau Nama"
             className="w-full p-2 border border-gray-300 rounded-md outline-none"
           />
         </div>
@@ -166,6 +165,7 @@ export default function AdminTable() {
             <th className="border border-gray-300 p-2">Alat Kontrasepsi</th>
             <th className="border border-gray-300 p-2">WhatsApp</th>
             <th className="border border-gray-300 p-2">Tanggal Registrasi</th>
+            <th className="border border-gray-300 p-2">Tanggal KB Berikunya</th>
             <th className="border border-gray-300 p-2">Aksi</th>
           </tr>
         </thead>
@@ -189,9 +189,12 @@ export default function AdminTable() {
               </td>
               <td className="border border-gray-300 p-2">{item.wa}</td>
               <td className="border border-gray-300 p-2">
-                {new Date(item.created_at).toLocaleDateString()}
+                {item.tanggal_daftar}
               </td>
-              <td className="border-gray-300 p-2 space-y-2 flex flex-col">
+              <td className="border border-gray-300 p-2">
+                {item.tanggal_berikutnya}
+              </td>
+              <td className="border-gray-300 p-2 space-y-2 flex flex-col justify-center">
                 <button
                   onClick={() => handleUpdate(item.nik)}
                   className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"

@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../../../../utils/supabase";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { updateReminder } from "../../../../services/updateRemiderById";
+import { getReminderById } from "../../../../services/getReminderByid";
 import Button from "../../elements/Button";
 import FormField from "../../fragments/FormField";
 import Judul from "../../elements/Judul";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import logo from "../../../../assets/images/logo.png";
 
-const UpdateRegistrationForm = () => {
+const UpdateForm = () => {
   const { nik } = useParams();
-  console.log("NIK dari URL:", nik);
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nik: "",
     nama: "",
@@ -23,27 +23,14 @@ const UpdateRegistrationForm = () => {
   });
 
   useEffect(() => {
-    if (!nik) {
-      toast.error("NIK tidak ditemukan.");
-      return;
-    }
-
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase
-          .from("kb_registration")
-          .select("*")
-          .eq("nik", nik) // Pastikan nik tersedia
-          .single(); // Mengambil satu data berdasarkan NIK
-
-        if (error) throw error;
-
-        setFormData(data); // Isi data form dengan hasil query
+        const data = await getReminderById(nik);
+        setFormData({ ...data });
       } catch (err) {
-        toast.error(`Gagal mengambil data: ${err.message}`);
+        toast.error("Gagal mengambil data!");
       }
     };
-
     fetchData();
   }, [nik]);
 
@@ -52,8 +39,17 @@ const UpdateRegistrationForm = () => {
     setFormData({ ...formData, [id]: value });
   };
 
+  const formatPhoneNumber = (phoneNumber) => {
+    if (phoneNumber.startsWith("0")) {
+      return "+62" + phoneNumber.slice(1);
+    }
+    return phoneNumber;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formattedWa = formatPhoneNumber(formData.wa);
 
     // Validasi input
     if (
@@ -63,7 +59,6 @@ const UpdateRegistrationForm = () => {
       !formData.ttl ||
       !formData.usia ||
       !formData.jenis_kelamin ||
-      !formData.alamat ||
       !formData.alat_kontrasepsi
     ) {
       toast.error("Semua kolom harus diisi!");
@@ -71,26 +66,21 @@ const UpdateRegistrationForm = () => {
     }
 
     try {
-      const { error } = await supabase
-        .from("kb_registration")
-        .update({
-          nama: formData.nama,
-          wa: formData.wa,
-          ttl: formData.ttl,
-          usia: formData.usia,
-          jenis_kelamin: formData.jenis_kelamin,
-          alamat: formData.alamat,
-          alat_kontrasepsi: formData.alat_kontrasepsi,
-        })
-        .eq("nik", nik); // Update data berdasarkan NIK
+      // Kirim data yang diperbarui ke API
+      const updatedData = {
+        nik: formData.nik,
+        nama: formData.nama,
+        wa: formattedWa,
+        ttl: formData.ttl,
+        usia: formData.usia,
+        jenis_kelamin: formData.jenis_kelamin,
+        alamat: formData.alamat,
+        alat_kontrasepsi: formData.alat_kontrasepsi,
+      };
 
-      if (error) throw error;
+      await updateReminder(nik, updatedData);
 
       toast.success("Data berhasil diperbarui!");
-
-      setTimeout(() => {
-        navigate("/admin/dashboard");
-      }, 2000);
     } catch (err) {
       toast.error(`Terjadi kesalahan: ${err.message}`);
     }
@@ -101,7 +91,8 @@ const UpdateRegistrationForm = () => {
       onSubmit={handleSubmit}
       className="bg-blue-900 p-8 shadow-lg max-w-lg mx-auto"
     >
-      <Judul judul="Update Data KB" />
+      <img src={logo} className="rounded-md mb-4 w-full" />
+      <Judul judul="Update Data Akseptor KB Non-MKJP" />
 
       <FormField
         id="nik"
@@ -109,7 +100,6 @@ const UpdateRegistrationForm = () => {
         placeholder="Masukkan NIK"
         value={formData.nik}
         onChange={handleChange}
-        disabled // Tidak dapat diubah karena digunakan sebagai ID
       />
       <FormField
         id="nama"
@@ -177,4 +167,4 @@ const UpdateRegistrationForm = () => {
   );
 };
 
-export default UpdateRegistrationForm;
+export default UpdateForm;
