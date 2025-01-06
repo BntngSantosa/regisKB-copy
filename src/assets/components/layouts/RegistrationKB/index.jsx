@@ -90,9 +90,9 @@ const RegistrationForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-blue-900 p-8 shadow-lg max-w-lg mx-auto"
+      className="bg-gradient-to-b from-[#00FF00] to-[#008000] p-8 shadow-lg max-w-lg mx-auto"
     >
-      <img src={logo} className="rounded-md mb-4 w-full"/>
+      <img src={logo} className="rounded-md mb-4 w-full" />
       <Judul judul="Pendaftaran Akseptor KB Non-MKJP" />
 
       <FormField

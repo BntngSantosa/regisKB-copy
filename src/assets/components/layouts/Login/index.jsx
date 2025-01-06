@@ -4,6 +4,7 @@ import Button from "../../elements/Button";
 import FormField from "../../fragments/FormField";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import logo from "../../../../assets/images/logo.png";
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
@@ -49,11 +50,9 @@ const AdminLogin = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-blue-900 p-8 shadow-lg max-w-lg w-full rounded-md"
+        className="bg-gradient-to-b from-[#00FF00] to-[#008000] p-8 shadow-lg max-w-lg w-full rounded-md"
       >
-        <h1 className="text-white text-xl font-bold mb-6 text-center">
-          Admin Login
-        </h1>
+        <img src={logo} className="rounded-md mb-4 w-full" />
         <FormField
           id="username"
           label="Username"
