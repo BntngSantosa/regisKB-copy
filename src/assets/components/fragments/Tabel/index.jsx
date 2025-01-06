@@ -121,7 +121,7 @@ export default function AdminTable() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "kb_registration.xlsx";
+    a.download = "Daftar pendaftar KB.xlsx";
     a.click();
     window.URL.revokeObjectURL(url);
   };

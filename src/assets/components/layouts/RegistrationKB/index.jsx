@@ -53,13 +53,6 @@ const RegistrationForm = () => {
       return;
     }
 
-    if (!formData.opt_in) {
-      toast.error(
-        "Anda harus menyetujui untuk menerima pengingat melalui WhatsApp."
-      );
-      return;
-    }
-
     try {
       // Kirim data ke API
       const reminderData = {

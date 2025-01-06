@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_BACKEND_URL;
+const API_URL = import.meta.env.VITE_BVITE_BACKEND_URL;
 
 export const fetchAPI = async (method = "GET", body = null, endpoint = "") => {
   const options = {
