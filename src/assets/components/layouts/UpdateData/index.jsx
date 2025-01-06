@@ -100,6 +100,7 @@ const UpdateForm = () => {
         placeholder="Masukkan NIK"
         value={formData.nik}
         onChange={handleChange}
+        disabled={"true"}
       />
       <FormField
         id="nama"

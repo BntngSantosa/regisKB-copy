@@ -1,4 +1,4 @@
-const Input = ({ id, placeholder, type = "text", value, onChange }) => (
+const Input = ({ id, placeholder, type = "text", value, onChange, disabled}) => (
   <input
     id={id}
     placeholder={placeholder}
@@ -6,6 +6,7 @@ const Input = ({ id, placeholder, type = "text", value, onChange }) => (
     value={value}
     onChange={onChange}
     className="w-full p-2 bg-white rounded-md"
+    disabled={disabled}
   />
 );
 

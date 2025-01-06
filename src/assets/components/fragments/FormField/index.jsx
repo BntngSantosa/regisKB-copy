@@ -10,12 +10,19 @@ const FormField = ({
   options,
   value,
   onChange,
+  disabled
 }) => {
   return (
     <div className="mb-5">
       <Label htmlFor={id}>{label}</Label>
       {options ? (
-        <Select id={id} options={options} label={label} value={value} onChange={onChange} />
+        <Select
+          id={id}
+          options={options}
+          label={label}
+          value={value}
+          onChange={onChange}
+        />
       ) : (
         <Input
           id={id}
@@ -24,6 +31,7 @@ const FormField = ({
           value={value}
           onChange={onChange}
           required
+          disabled={disabled}
         />
       )}
     </div>
