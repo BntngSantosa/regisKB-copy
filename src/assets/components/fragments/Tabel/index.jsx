@@ -3,7 +3,7 @@ import { supabase } from "../../../../utils/supabase";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ExcelJS from "exceljs"; // Impor ExcelJS
+// import ExcelJS from "exceljs"; // Impor ExcelJS
 
 export default function AdminTable() {
   const [data, setData] = useState([]);
@@ -81,67 +81,67 @@ export default function AdminTable() {
   const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   // Fungsi untuk ekspor ke Excel menggunakan ExcelJS
-  const exportToExcel = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Daftar pendaftar KB");
+  // const exportToExcel = async () => {
+  //   const workbook = new ExcelJS.Workbook();
+  //   const worksheet = workbook.addWorksheet("Daftar pendaftar KB");
 
-    // Menambahkan header
-    worksheet.columns = [
-      { header: "NIK", key: "nik", width: 15 },
-      { header: "Nama", key: "nama", width: 30 },
-      { header: "Alamat", key: "alamat", width: 30 },
-      { header: "Tempat, Tanggal Lahir", key: "ttl", width: 20 },
-      { header: "Usia", key: "usia", width: 10 },
-      { header: "Jenis Kelamin", key: "jenis_kelamin", width: 20 },
-      { header: "Alat Kontrasepsi", key: "alat_kontrasepsi", width: 20 },
-      { header: "Nomor WhatsApp", key: "wa", width: 20 },
-      { header: "Tanggal Pendaftaran", key: "tanggal_daftar", width: 20 },
-      { header: "Tanggal Kembali", key: "tanggal_berikutnya", width: 20 },
-    ];
+  //   // Menambahkan header
+  //   worksheet.columns = [
+  //     { header: "NIK", key: "nik", width: 15 },
+  //     { header: "Nama", key: "nama", width: 30 },
+  //     { header: "Alamat", key: "alamat", width: 30 },
+  //     { header: "Tempat, Tanggal Lahir", key: "ttl", width: 20 },
+  //     { header: "Usia", key: "usia", width: 10 },
+  //     { header: "Jenis Kelamin", key: "jenis_kelamin", width: 20 },
+  //     { header: "Alat Kontrasepsi", key: "alat_kontrasepsi", width: 20 },
+  //     { header: "Nomor WhatsApp", key: "wa", width: 20 },
+  //     { header: "Tanggal Pendaftaran", key: "tanggal_daftar", width: 20 },
+  //     { header: "Tanggal Kembali", key: "tanggal_berikutnya", width: 20 },
+  //   ];
 
-    // Menambahkan data
-    currentData.forEach((item) => {
-      worksheet.addRow({
-        nik: item.nik,
-        nama: item.nama,
-        alamat: item.alamat,
-        ttl: item.ttl,
-        usia: item.usia,
-        jenis_kelamin: item.jenis_kelamin,
-        alat_kontrasepsi: item.alat_kontrasepsi,
-        wa: item.wa,
-        tanggal_daftar: item.tanggal_daftar,
-        tanggal_berikutnya: item.tanggal_berikutnya,
-      });
-    });
+  //   // Menambahkan data
+  //   currentData.forEach((item) => {
+  //     worksheet.addRow({
+  //       nik: item.nik,
+  //       nama: item.nama,
+  //       alamat: item.alamat,
+  //       ttl: item.ttl,
+  //       usia: item.usia,
+  //       jenis_kelamin: item.jenis_kelamin,
+  //       alat_kontrasepsi: item.alat_kontrasepsi,
+  //       wa: item.wa,
+  //       tanggal_daftar: item.tanggal_daftar,
+  //       tanggal_berikutnya: item.tanggal_berikutnya,
+  //     });
+  //   });
 
-    // Menyimpan file Excel
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: "application/octet-stream" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "Daftar pendaftar KB.xlsx";
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
+  //   // Menyimpan file Excel
+  //   const buffer = await workbook.xlsx.writeBuffer();
+  //   const blob = new Blob([buffer], { type: "application/octet-stream" });
+  //   const url = window.URL.createObjectURL(blob);
+  //   const a = document.createElement("a");
+  //   a.href = url;
+  //   a.download = "Daftar pendaftar KB.xlsx";
+  //   a.click();
+  //   window.URL.revokeObjectURL(url);
+  // };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="">
       <div className="flex justify-between items-center mb-4">
         <div className="space-x-2">
           <button
             onClick={() => handleAdd()}
-            className="px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-800"
+            className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-sky-800"
           >
             Tambah data
           </button>
-          <button
+          {/* <button
             onClick={exportToExcel}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-800"
           >
             Export ke Excel
-          </button>
+          </button> */}
         </div>
         <div className="w-1/2">
           <input
@@ -153,19 +153,24 @@ export default function AdminTable() {
           />
         </div>
       </div>
+      <div className="overflow-x-auto">
       <table className="min-w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
             <th className="border border-gray-300 p-2">NIK</th>
             <th className="border border-gray-300 p-2">Nama</th>
-            <th className="border border-gray-300 p-2">Alamat</th>
             <th className="border border-gray-300 p-2">Tanggal Lahir</th>
             <th className="border border-gray-300 p-2">Usia</th>
             <th className="border border-gray-300 p-2">Jenis Kelamin</th>
-            <th className="border border-gray-300 p-2">Alat Kontrasepsi</th>
+            <th className="border border-gray-300 p-2">Kota/Kabupaten</th>
+            <th className="border border-gray-300 p-2">Kecamatan</th>
+            <th className="border border-gray-300 p-2">Kelurahan</th>
+            <th className="border border-gray-300 p-2">RT</th>
+            <th className="border border-gray-300 p-2">RW</th>
             <th className="border border-gray-300 p-2">WhatsApp</th>
-            <th className="border border-gray-300 p-2">Tanggal Registrasi</th>
-            <th className="border border-gray-300 p-2">Tanggal KB Berikunya</th>
+            <th className="border border-gray-300 p-2">Alat Kontrasepsi</th>
+            <th className="border border-gray-300 p-2">Tanggal Daftar</th>
+            <th className="border border-gray-300 p-2">Tanggal Berikutnya</th>
             <th className="border border-gray-300 p-2">Aksi</th>
           </tr>
         </thead>
@@ -176,18 +181,22 @@ export default function AdminTable() {
                 {item.nik}
               </td>
               <td className="border border-gray-300 p-2">{item.nama}</td>
-              <td className="border border-gray-300 p-2">{item.alamat}</td>
-              <td className="border border-gray-300 p-2">{item.ttl}</td>
+              <td className="border border-gray-300 p-2">{item.tanggal_lahir}</td>
               <td className="border border-gray-300 p-2 text-center">
                 {item.usia}
               </td>
               <td className="border border-gray-300 p-2">
                 {item.jenis_kelamin}
               </td>
+              <td className="border border-gray-300 p-2">{item.kota}</td>
+              <td className="border border-gray-300 p-2">{item.kecamatan}</td>
+              <td className="border border-gray-300 p-2">{item.kelurahan}</td>
+              <td className="border border-gray-300 p-2">{item.rt}</td>
+              <td className="border border-gray-300 p-2">{item.rw}</td>
+              <td className="border border-gray-300 p-2">{item.wa}</td>
               <td className="border border-gray-300 p-2">
                 {item.alat_kontrasepsi}
               </td>
-              <td className="border border-gray-300 p-2">{item.wa}</td>
               <td className="border border-gray-300 p-2">
                 {item.tanggal_daftar}
               </td>
@@ -212,6 +221,7 @@ export default function AdminTable() {
           ))}
         </tbody>
       </table>
+      </div>
       <div className="mt-4 flex justify-center items-center space-x-2">
         {Array.from({ length: totalPages }, (_, i) => (
           <button

@@ -20,7 +20,7 @@ export default function index() {
           </button>
           <h1 className="text-lg font-bold">Admin Dashboard</h1>
         </header>
-        <main className="p-4">
+        <main className="p-4 overflow-x-scroll">
           <AdminTable />
         </main>
       </div>

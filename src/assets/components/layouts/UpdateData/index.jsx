@@ -15,10 +15,12 @@ const UpdateForm = () => {
     nik: "",
     nama: "",
     wa: "",
-    ttl: "",
-    usia: "",
-    jenis_kelamin: "",
-    alamat: "",
+    tanggal_lahir: "",
+    kota: "",
+    kecamatan: "",
+    kelurahan: "",
+    rt: "",
+    rw: "",
     alat_kontrasepsi: "",
   });
 
@@ -33,15 +35,42 @@ const UpdateForm = () => {
     };
     fetchData();
   }, [nik]);
-
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
+
+    // Aturan validasi berdasarkan `id`
+    const validationRules = {
+      nik: (val) => val.length <= 16,
+      nama: (val) => /^[a-zA-Z\s]*$/.test(val),
+      kota: (val) => /^[a-zA-Z\s]*$/.test(val),
+      kecamatan: (val) => /^[a-zA-Z\s]*$/.test(val),
+      kelurahan: (val) => /^[a-zA-Z\s]*$/.test(val),
+      rt: (val) => val.length <= 3,
+      rw: (val) => val.length <= 3,
+      wa: (val) => /^[0-9]*$/.test(val) && val.length <= 15,
+    };
+
+    // Validasi sesuai aturan
+    if (validationRules[id]) {
+      if (validationRules[id](value)) {
+        setFormData({ ...formData, [id]: value });
+      }
+    } else {
+      // Input yang tidak memerlukan validasi
+      setFormData({ ...formData, [id]: value });
+    }
   };
 
   const formatPhoneNumber = (phoneNumber) => {
     if (phoneNumber.startsWith("0")) {
       return "+62" + phoneNumber.slice(1);
+    }
+    return phoneNumber;
+  };
+
+  const formatPhoneNumberBack = (phoneNumber) => {
+    if (phoneNumber.startsWith("+62")) {
+      return "0" + phoneNumber.slice(3);
     }
     return phoneNumber;
   };
@@ -56,9 +85,12 @@ const UpdateForm = () => {
       !formData.nik ||
       !formData.nama ||
       !formData.wa ||
-      !formData.ttl ||
-      !formData.usia ||
-      !formData.jenis_kelamin ||
+      !formData.tanggal_lahir ||
+      !formData.kota ||
+      !formData.kecamatan ||
+      !formData.kelurahan ||
+      !formData.rt ||
+      !formData.rw ||
       !formData.alat_kontrasepsi
     ) {
       toast.error("Semua kolom harus diisi!");
@@ -71,16 +103,24 @@ const UpdateForm = () => {
         nik: formData.nik,
         nama: formData.nama,
         wa: formattedWa,
-        ttl: formData.ttl,
-        usia: formData.usia,
-        jenis_kelamin: formData.jenis_kelamin,
-        alamat: formData.alamat,
+        tanggal_lahir: new Date(formData.tanggal_lahir)
+          .toISOString()
+          .split("T")[0],
+        jenis_kelamin: "Perempuan",
+        kota: formData.kota,
+        kecamatan: formData.kecamatan,
+        kelurahan: formData.kelurahan,
+        rt: formData.rt,
+        rw: formData.rw,
         alat_kontrasepsi: formData.alat_kontrasepsi,
       };
 
       await updateReminder(nik, updatedData);
 
       toast.success("Data berhasil diperbarui!");
+      setTimeout(() => {
+        window.location.href = "/admin/dashboard";
+      }, 2000);
     } catch (err) {
       toast.error(`Terjadi kesalahan: ${err.message}`);
     }
@@ -92,7 +132,7 @@ const UpdateForm = () => {
       className="bg-gradient-to-b from-[#00FF00] to-[#008000] p-8 shadow-lg max-w-lg mx-auto"
     >
       <img src={logo} className="rounded-md mb-4 w-full" />
-      <Judul judul="Update Data Akseptor KB Non-MKJP" />
+      <Judul judul="Pendaftaran Akseptor KB Non-MKJP" />
 
       <FormField
         id="nik"
@@ -100,7 +140,8 @@ const UpdateForm = () => {
         placeholder="Masukkan NIK"
         value={formData.nik}
         onChange={handleChange}
-        disabled={"true"}
+        type="number"
+        disabled={true}
       />
       <FormField
         id="nama"
@@ -113,42 +154,57 @@ const UpdateForm = () => {
         id="wa"
         label="Nomor Whatsapp"
         placeholder="Masukkan Nomor Whatsapp"
-        value={formData.wa}
+        value={formatPhoneNumberBack(formData.wa)}
         onChange={handleChange}
+        type="number"
       />
       <FormField
-        id="ttl"
-        label="TTL"
-        type="text"
+        id="tanggal_lahir"
+        label="Tanggal lahir"
+        type="date"
         placeholder="Bandung, 12 Januari 2024"
-        value={formData.ttl}
+        value={formData.tanggal_lahir}
         onChange={handleChange}
       />
-      <FormField
-        id="usia"
-        label="Usia"
-        placeholder="Masukkan Usia"
-        type="text"
-        value={formData.usia}
-        onChange={handleChange}
-      />
-      <FormField
-        id="jenis_kelamin"
-        label="Jenis Kelamin"
-        options={[
-          { value: "Laki-laki", label: "Laki-laki" },
-          { value: "Perempuan", label: "Perempuan" },
-        ]}
-        value={formData.jenis_kelamin}
-        onChange={handleChange}
-      />
-      <FormField
-        id="alamat"
-        label="Alamat"
-        placeholder="Masukkan Alamat"
-        value={formData.alamat}
-        onChange={handleChange}
-      />
+      <div className="grid grid-cols-2 gap-3">
+        <FormField
+          id="kota"
+          label="Kota/Kabupaten"
+          placeholder="Masukkan kota/kabupaten"
+          value={formData.kota}
+          onChange={handleChange}
+        />
+        <FormField
+          id="kecamatan"
+          label="Kecamatan"
+          placeholder="Masukkan kecamatan"
+          value={formData.kecamatan}
+          onChange={handleChange}
+        />
+        <FormField
+          id="kelurahan"
+          label="Kelurahan"
+          placeholder="Masukkan kelurahan"
+          value={formData.kelurahan}
+          onChange={handleChange}
+        />
+        <FormField
+          id="rt"
+          label="RT"
+          placeholder="003"
+          value={"00"+formData.rt}
+          onChange={handleChange}
+          type="number"
+        />
+        <FormField
+          id="rw"
+          label="RW"
+          placeholder="001"
+          value={"00"+formData.rw}
+          onChange={handleChange}
+          type="number"
+        />
+      </div>
       <FormField
         id="alat_kontrasepsi"
         label="Program KB"
@@ -160,7 +216,7 @@ const UpdateForm = () => {
         value={formData.alat_kontrasepsi}
         onChange={handleChange}
       />
-      <Button text="Update" />
+      <Button text="Submit" />
 
       {/* React Toastify container */}
       <ToastContainer />
